@@ -1,7 +1,4 @@
-
-import {MongoClient} from 'mongodb'
-
-
+import { MongoClient, ObjectId } from "mongodb";
 
 const connectionURL = "mongodb://localhost:27017";
 
@@ -16,11 +13,16 @@ try{
     console.log("connected to mongodb");
     const db = client.db(databaseName)
     const collection = db.collection('users')
-    const result = await collection.insertOne({name:'akshay',age:20});
-    
-    console.log("inserted doc",result.insertedId)
 
+    // const res = await collection.findOne({name:"akshay"})
+    const res = await collection.find({}).toArray();
+    console.log(res)
+
+    // const id = new ObjectId();
+    // console.log(id)
+    
 }
+
 catch(error){
     console.log("error connecting to mongod")
 }
