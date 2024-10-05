@@ -14,10 +14,12 @@ try{
     const db = client.db(databaseName)
     const collection = db.collection('users')
 
-    // const res = await collection.findOne({name:"akshay"})
-    const res = await collection.find({}).toArray();
-    console.log(res)
+    const resPromise = collection.findOne({name:"akshay"})
+    // const resPromise = await collection.find({}).toArray();
 
+    resPromise.then(doc =>{
+        console.log(doc);
+    })
     // const id = new ObjectId();
     // console.log(id)
     
