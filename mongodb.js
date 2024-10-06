@@ -14,7 +14,7 @@ try{
     const db = client.db(databaseName)
     const collection = db.collection('users')
 
-    const resPromise = collection.findOne({name:"akshay"})
+    const resPromise = collection.findOne({name:"akshay koni"})
     // const resPromise = await collection.find({}).toArray();
 
     resPromise.then(doc =>{
