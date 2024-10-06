@@ -17,6 +17,15 @@ const user_schema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     }
 });
+
+export const User = mongoose.model('users', user_schema);
+
+export const userSchema = Joi.object({
+    name: Joi.string().required(),
+    age: Joi.number().min(0).required(),
+    email: Joi.string().email().lowercase().required(),
+    password: Joi.string()
+});
+
