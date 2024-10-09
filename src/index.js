@@ -1,6 +1,8 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+// import mongoose from 'mongoose'
+import './db/mongoose.js';
 import Joi from 'joi'
 import {User, userSchema} from '../src/models/user.js'
 
@@ -18,15 +20,22 @@ app.get('/', (req, res)=>{
 })
 
 app.post('/users', (req, res)=>{
-    res.send("testing")
+    // res.send("testing")
     console.log(req.body)
-    const {err, result } = userSchema.validate(req.body);
-    if (err){
-        console.log(err)
+    const {error, value } = userSchema.validate(req.body);
+    if (error){
+        console.log(value)
     }
-    console.log(result)
-    const user = new User(result)
-    console.log(user)
+    // console.log(value)
+    const user  = new User(value)
+    user.save()
+        .then((user) => res.send(user))
+        .catch(error =>{
+            console.log("error",error);
+        })
+    console.log(user);
+    // const user = new User(result)
+    // console.log(user)
 })
 
 app.listen(port, () =>{
