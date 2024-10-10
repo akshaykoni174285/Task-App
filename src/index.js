@@ -19,7 +19,7 @@ app.get('/', (req, res)=>{
     res.send('<h1>hello and welcome to home page</h1>')
 })
 
-app.post('/users', (req, res)=>{
+app.post('/users', async(req, res)=>{
     // res.send("testing")
     console.log(req.body)
     const {error, value } = userSchema.validate(req.body);
@@ -28,6 +28,7 @@ app.post('/users', (req, res)=>{
     }
     // console.log(value)
     const user  = new User(value)
+
     user.save()
         .then((user) => res.send(user))
         .catch(error =>{
@@ -58,14 +59,23 @@ app.post('/tasks',(req, res) =>{
             console.log("error while inserting the doc")
         })
 })
-app.get('/users',(req, res) =>{
-    User.find({})
-        .then(users=>{
-            res.send(users);
-        })
-        .catch(err=>{
-            console.log("unable to get the users data");
-        })
+app.get('/users', async(req, res) =>{
+    try{
+        const users = await User.find({})
+        res.send(users)
+    }
+    catch(e){
+        console.log("unable to get the data",e)
+    }
+    
+        // .then(users=>{
+        //     res.send(users);
+        // })
+        // .catch(err=>{
+        //     console.log("unable to get the users data");
+        // })
+
+
 })
 app.get('/users/:id',(req, res)=>{
     const id = req.params.id
@@ -84,6 +94,26 @@ app.get('/users/:id',(req, res)=>{
     console.log(req.params.id)
 })
 
+
+app.patch('/users/:id',async(req,res)=>{
+
+    try{
+        const {error, value } = userSchema.validate(req.body);
+        console.log(value)
+        
+        const user  = await User.findByIdAndUpdate(req.params.id, value,{new:true})
+
+        res.send(user);
+        console.log(user)
+    }
+    catch(e){
+        console.log("error while updating the document", e)
+    }
+
+    
+})
+
+
 app.get('/tasks',(req,res)=>{
     Task.find({})
         .then(tasks=>{
@@ -97,22 +127,40 @@ app.get('/tasks',(req,res)=>{
         })
 })
 
+// app.get('/tasks/:id',(req,res)=>{
+//     const id  = req.params.id
+//     console.log(id)
+//     Task.findOne({'_id':id})
+//         .then(task=>{
+//             if(!task){
+//                 return res.status(404).send()
+//             }
+
+//             res.send(task).status(200)
+
+//         })
+//         .catch(err=>{
+//             console.log("error in finding the doc",err)
+//         })
+
+// })
+
+// task api to remove a given task by id and then get the incompleted task details
+
+
 app.get('/tasks/:id',(req,res)=>{
-    const id  = req.params.id
-    console.log(id)
-    Task.findOne({'_id':id})
+    const id = req.params.id
+    Task.findOneAndDelete(id)
         .then(task=>{
-            if(!task){
-                return res.status(404).send()
-            }
-
-            res.send(task).status(200)
-
+                console.log(task)
+                return Task.find({'completed':false})
+        })
+        .then(tasks=>{
+            res.send(tasks)
         })
         .catch(err=>{
-            console.log("error in finding the doc",err)
+            console.log("error while processing", err)
         })
-
 })
 
 app.listen(port, () =>{
