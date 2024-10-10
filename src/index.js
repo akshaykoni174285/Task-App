@@ -64,13 +64,17 @@ app.get('/users',(req, res) =>{
             res.send(users);
         })
         .catch(err=>{
-            console.log("unable to send the users datra");
+            console.log("unable to get the users data");
         })
 })
 app.get('/users/:id',(req, res)=>{
     const id = req.params.id
     User.findOne({'_id':id})
         .then(user=>{
+            if(!user){
+                return res.status(404).send()
+            }
+
             res.send(user).status(200)
 
         })
@@ -78,6 +82,37 @@ app.get('/users/:id',(req, res)=>{
             console.log("error in finding the doc")
         })
     console.log(req.params.id)
+})
+
+app.get('/tasks',(req,res)=>{
+    Task.find({})
+        .then(tasks=>{
+            if(!tasks){
+                return res.status(404).send()
+            }
+            res.send(tasks)
+        })
+        .catch(error=>{
+            console.log("unable to get the all the tasks")
+        })
+})
+
+app.get('/tasks/:id',(req,res)=>{
+    const id  = req.params.id
+    console.log(id)
+    Task.findOne({'_id':id})
+        .then(task=>{
+            if(!task){
+                return res.status(404).send()
+            }
+
+            res.send(task).status(200)
+
+        })
+        .catch(err=>{
+            console.log("error in finding the doc",err)
+        })
+
 })
 
 app.listen(port, () =>{
