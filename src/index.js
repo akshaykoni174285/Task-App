@@ -13,12 +13,14 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
-
+// api for the home page
 app.get('/', (req, res)=>{
     console.log("home page")
     res.send('<h1>hello and welcome to home page</h1>')
 })
 
+
+// creating user
 app.post('/users', async(req, res)=>{
     // res.send("testing")
     console.log(req.body)
@@ -39,7 +41,7 @@ app.post('/users', async(req, res)=>{
     // console.log(user)
 })
 
-
+// creating user 
 app.post('/tasks',(req, res) =>{
     console.log(req.body)
 
@@ -59,6 +61,10 @@ app.post('/tasks',(req, res) =>{
             console.log("error while inserting the doc")
         })
 })
+
+
+
+// get all users
 app.get('/users', async(req, res) =>{
     try{
         const users = await User.find({})
@@ -77,6 +83,9 @@ app.get('/users', async(req, res) =>{
 
 
 })
+
+
+// get user by its id 
 app.get('/users/:id',(req, res)=>{
     const id = req.params.id
     User.findOne({'_id':id})
@@ -98,8 +107,11 @@ app.get('/users/:id',(req, res)=>{
 app.patch('/users/:id',async(req,res)=>{
 
     try{
-        const {error, value } = userSchema.validate(req.body);
-        console.log(value)
+        // const {error, value } = userSchema.validate(req.body);
+        // console.log(value)
+        // if(error){
+        //     return res.send("error while patching")
+        // }
         
         const user  = await User.findByIdAndUpdate(req.params.id, value,{new:true})
 
@@ -112,8 +124,23 @@ app.patch('/users/:id',async(req,res)=>{
 
     
 })
+app.patch('/tasks/:id', async (req, res) => {
 
+    try {
+        const {error, value} = taskSchema.validate(req.body)
+        console.log(value)
+       
+        const task = await Task.findByIdAndUpdate(req.params.id, value, {new:true})
+        res.send(task)
+    } catch (error) {
+        res.send("error").status(400)
+        console.log(error)
+        
+    }
 
+})
+
+// get all tasks 
 app.get('/tasks',(req,res)=>{
     Task.find({})
         .then(tasks=>{
@@ -127,41 +154,41 @@ app.get('/tasks',(req,res)=>{
         })
 })
 
-// app.get('/tasks/:id',(req,res)=>{
-//     const id  = req.params.id
-//     console.log(id)
-//     Task.findOne({'_id':id})
-//         .then(task=>{
-//             if(!task){
-//                 return res.status(404).send()
-//             }
+app.get('/tasks/:id',(req,res)=>{
+    const id  = req.params.id
+    console.log(id)
+    Task.findOne({'_id':id})
+        .then(task=>{
+            if(!task){
+                return res.status(404).send()
+            }
 
-//             res.send(task).status(200)
+            res.send(task).status(200)
 
-//         })
-//         .catch(err=>{
-//             console.log("error in finding the doc",err)
-//         })
+        })
+        .catch(err=>{
+            console.log("error in finding the doc",err)
+        })
 
-// })
+})
 
 // task api to remove a given task by id and then get the incompleted task details
 
-
-app.get('/tasks/:id',(req,res)=>{
-    const id = req.params.id
-    Task.findOneAndDelete(id)
-        .then(task=>{
-                console.log(task)
-                return Task.find({'completed':false})
-        })
-        .then(tasks=>{
-            res.send(tasks)
-        })
-        .catch(err=>{
-            console.log("error while processing", err)
-        })
-})
+// get tasks by its id
+// app.get('/tasks/:id',(req,res)=>{
+//     const id = req.params.id
+//     Task.findOneAndDelete(id)
+//         .then(task=>{
+//                 console.log(task)
+//                 return Task.find({'completed':false})
+//         })
+//         .then(tasks=>{
+//             res.send(tasks)
+//         })
+//         .catch(err=>{
+//             console.log("error while processing", err)
+//         })
+// })
 
 app.listen(port, () =>{
     console.log("listinging to port :" ,port)
