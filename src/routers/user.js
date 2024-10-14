@@ -66,16 +66,22 @@ router.get('/users/:id',(req, res)=>{
 
 // update a user info using id 
 router.patch('/users/:id',async(req,res)=>{
+    const updates = Object.keys(req.body)
+
 
     try{
-        const {error, value } = userSchema.validate(req.body);
-        console.log(value)
-        if(error){
-            return res.send("error while patching")
-        }
-        
-        const user  = await User.findByIdAndUpdate(req.params.id, value,{new:true})
+        const user  = await User.findById(req.params.id)
+        updates.forEach((update) => user[update] = req.body[update]
+        )
 
+        // const {error, value } = userSchema.validate(req.body);
+        // console.log(value)
+        // if(error){
+        //     return res.send("error while patching")
+        // }
+        
+        // const user  = await User.findByIdAndUpdate(req.params.id, req.body,{new:true})
+        await user.save()
         res.send(user);
         console.log(user)
     }
