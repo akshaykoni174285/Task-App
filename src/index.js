@@ -6,6 +6,10 @@ import userRouter from '../src/routers/user.js'
 import taskRouter from '../src/routers/task.js';
 import './db/mongoose.js';
 
+import bcrypt from 'bcrypt'
+
+
+
 const app = express()
 const port  = process.env.PORT || 3000
 
