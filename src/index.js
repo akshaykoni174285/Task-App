@@ -34,3 +34,19 @@ app.use(taskRouter);
 app.listen(port, () =>{
     console.log("listinging to port :" ,port)
 })
+
+
+import jwt from 'jsonwebtoken';
+
+const myFunction = async()=>{
+    // using sign function 
+    const token = jwt.sign({_id:"abc123"},"invincibleunderthesun",{expiresIn: '2 days'})
+    console.log(token)
+    // first base64 
+    // second is payload which we passed id 
+    // signature for verification
+    const res = await jwt.verify(token,"invincibleunderthesun")
+    console.log(res);
+}
+
+myFunction();

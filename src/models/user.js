@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Joi from "joi";
 import MongoDB from "mongodb"
+import jwt from "jsonwebtoken"; 
 
 import bcrypt from "bcrypt";
 
@@ -22,8 +23,23 @@ const user_schema = new mongoose.Schema({
     },
     password: {
         type: String,
-    }
+    },
+    tokens:[{
+        token:{
+            type: String,
+            required: true
+        }
+    }]
 });
+user_schema.methods.getAuthToken = async function(){
+
+    const user = this;
+    const token = jwt.sign({_id: user._id.toString()},"invincibleunderthesun");
+    user.tokens = user.tokens.concat({token})
+    await user.save();
+    return token;
+}
+
 
 user_schema.statics.findByCredentials = async (email, password) => {
 

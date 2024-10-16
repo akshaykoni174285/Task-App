@@ -7,20 +7,26 @@ const router = new express.Router();
 // add a new user 
 router.post('/users', async(req, res)=>{
     // res.send("testing")
+    try{
     console.log(req.body)
     const {error, value } = userSchema.validate(req.body);
     if (error){
         console.log("error", error)
+        res.status(500).send()
     }
     // console.log(value)
     const user  = new User(value)
+    
 
-    user.save()
-        .then((user) => res.send(user))
-        .catch(error =>{
-            console.log("error",error);
-        })
-    console.log(user);
+    await user.save()
+    const jwtToken = await user.getAuthToken()
+    res.send({user, jwtToken});
+    }catch(error){
+        res.status(400).send("unable to signup")
+        console.log(error)
+    }
+    // console.log(user);
+   
     // const user = new User(result)
     // console.log(user)
 })
@@ -28,7 +34,9 @@ router.post('/users', async(req, res)=>{
 router.post('/user/login',async (req,res)=>{
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
-        res.send(user).status(201)
+
+        const jwtToken = await user.getAuthToken();
+        res.send({user,jwtToken}); 
         console.log("login sucessfully")
     } catch (error) {
         res.status(400).send()
@@ -71,7 +79,7 @@ router.get('/users/:id',(req, res)=>{
         .catch(err=>{
             console.log("error in finding the doc")
         })
-    console.log(req.params.id)
+    // console.log(req.params.id)
 })
 
 
