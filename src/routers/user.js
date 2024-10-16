@@ -79,6 +79,7 @@ router.get('/users/:id',(req, res)=>{
         .catch(err=>{
             console.log("error in finding the doc")
         })
+        // added for the testing by the id 
     // console.log(req.params.id)
 })
 
