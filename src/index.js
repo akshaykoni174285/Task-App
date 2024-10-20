@@ -5,7 +5,7 @@ import userRouter from '../src/routers/user.js'
 // import mongoose from 'mongoose'
 import taskRouter from '../src/routers/task.js';
 import './db/mongoose.js';
-
+import auth from './middleware/auth.js'
 import bcrypt from 'bcrypt'
 
 
@@ -16,7 +16,8 @@ const port  = process.env.PORT || 3000
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-
+app.use(auth)
+// need to use the middleware for the authenticatin 
 
 // to use the user router 
 

@@ -99,3 +99,4 @@ export const userSchema = Joi.object({
     password: Joi.string().required()
 });
 
+export default {User, userSchema};

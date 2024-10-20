@@ -2,6 +2,7 @@ import express from 'express';
 import Joi from 'joi'
 import {User, userSchema} from '../models/user.js'
 const router = new express.Router();
+import auth from '../middleware/auth.js'
 
 
 // add a new user 
@@ -45,7 +46,7 @@ router.post('/user/login',async (req,res)=>{
 })
 
 // get all users 
-router.get('/users', async(req, res) =>{
+router.get('/users',auth,async(req, res) =>{
     try{
         const users = await User.find({})
         res.send(users)
