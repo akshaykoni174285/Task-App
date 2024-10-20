@@ -1,7 +1,7 @@
 {
   "name": "task-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "a simple application for task management using mongodb and node js",
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
