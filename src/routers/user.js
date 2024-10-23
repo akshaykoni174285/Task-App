@@ -40,29 +40,42 @@ router.post('/user/login',async (req,res)=>{
         res.send({user,jwtToken}); 
         console.log("login sucessfully")
     } catch (error) {
-        res.status(400).send()
+        res.status(400).send({error:"unable to login"})
         console.log(error);
     }
 })
 
+router.post('/user/logout',auth, async(req,res,next)=>{
+    try{console.log(req.user)
+        req.user.tokens = req.user.tokens.filter((token) =>{
+            return token.token !== req.token
+        })
+        await req.user.save();
+        res.send({message:"sucessfully logged out"}).status(201)
+    }catch(error){
+        console.log(error);
+        res.status(400).send({msg:"unable to log out"})
+    }
+})
+
 // get all users 
-router.get('/users',auth,async(req, res) =>{
-    try{
-        const users = await User.find({})
-        res.send(users)
-    }
-    catch(e){
-        console.log("unable to get the data",e)
-    }
-    
+router.get('/users/me',auth,async(req, res) =>{
+   
+    // console.log(req.user);
+    res.status(200).send(req.user)
         // .then(users=>{
-        //     res.send(users);
+        //     res.send(users);l 
         // })
         // .catch(err=>{
         //     console.log("unable to get the users data");
         // })
 
 
+})
+
+router.get('/users', async (req, res) => {
+    const result = await User.find({});
+    res.send(result)
 })
 
 // get user by its id 

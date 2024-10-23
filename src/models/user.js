@@ -70,8 +70,7 @@ user_schema.pre('save', async function (next) {
             return next(error); // Handle error if password hashing fails
         }
     }
-    console.log("calling middleware")
-
+    
     next(); // Call next() to proceed with saving
 });
 // user_schema.pre('findByIdAndUpdate', async function (next) {
