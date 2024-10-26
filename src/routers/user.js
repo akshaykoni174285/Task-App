@@ -45,7 +45,7 @@ router.post('/user/login',async (req,res)=>{
     }
 })
 
-router.post('/user/logout',auth, async(req,res,next)=>{
+router.post('/user/logout',auth, async(req,res)=>{
     try{console.log(req.user)
         req.user.tokens = req.user.tokens.filter((token) =>{
             return token.token !== req.token
@@ -55,6 +55,18 @@ router.post('/user/logout',auth, async(req,res,next)=>{
     }catch(error){
         console.log(error);
         res.status(400).send({msg:"unable to log out"})
+    }
+})
+
+router.post('/user/logoutALL', auth, async(req,res)=>{
+    try {
+        req.user.tokens = []
+        req.user.save();
+        res.send({response:"the user has been logged out from all devices.."}).status(200)
+        
+    } catch (error) {
+        res.send({error}).status(400);
+        
     }
 })
 
