@@ -40,7 +40,7 @@ router.post('/user/login',async (req,res)=>{
         res.send({user,jwtToken}); 
         console.log("login sucessfully")
     } catch (error) {
-        res.status(400).send({error:"unable to login"})
+        res.status(400).send({error:"u nable to login"})
         console.log(error);
     }
 })
@@ -71,43 +71,28 @@ router.post('/user/logoutALL', auth, async(req,res)=>{
 })
 
 // get all users 
-router.get('/users/me',auth,async(req, res) =>{
-   
-    // console.log(req.user);
-    res.status(200).send(req.user)
-        // .then(users=>{
-        //     res.send(users);l 
-        // })
-        // .catch(err=>{
-        //     console.log("unable to get the users data");
-        // })
+router.get('/users/me', async (req, res) => {
+    try {
+        const users = await User.find({});
+        const result = users.map(user => user.toJSON()); // Apply toJSON on each user
+        res.status(200).send({ result });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
-
-})
 
 router.get('/users', async (req, res) => {
-    const result = await User.find({});
-    res.send(result)
-})
+    try {
+        const users = await User.find({});
+        
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
 // get user by its id 
-router.get('/users/:id',(req, res)=>{
-    const id = req.params.id
-    User.findOne({'_id':id})
-        .then(user=>{
-            if(!user){
-                return res.status(404).send()
-            }
-
-            res.send(user).status(200)
-
-        })
-        .catch(err=>{
-            console.log("error in finding the doc")
-        })
-        // added for the testing by the id 
-    // console.log(req.params.id)
-})
 
 
 // update a user info using id 
@@ -139,15 +124,10 @@ router.patch('/users/:id',async(req,res)=>{
 })
 
 // delte a user by its id 
-router.delete('/users/:id', async(req, res) => {
+router.delete('/users/me',auth, async(req, res) => {
     try {
-        console.log(req.params.id)
-        const user = await User.findByIdAndDelete(req.params.id)
-        console.log(res)
-        if(!user){
-            return res.send('user not found').status(404)
-        }
-        res.send('user deleted successfully').status(200)
+        await req.user.remove();
+        res.send(req.user)
     } catch (erorr) {
         res.send('something went wrong').status(500)
         

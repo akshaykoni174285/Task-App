@@ -39,6 +39,13 @@ user_schema.methods.getAuthToken = async function(){
     await user.save();
     return token;
 }
+user_schema.methods.toJSON = function(){
+    const user = this;
+    const userObjec = user.toObject();
+    delete userObject.tokens;
+    delete userObject.password;
+    return userObject
+}
 
 
 user_schema.statics.findByCredentials = async (email, password) => {
