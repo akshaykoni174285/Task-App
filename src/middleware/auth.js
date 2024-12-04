@@ -16,7 +16,7 @@ export default async(req,res,next)=>{
         // console.log(userobject);
         // console.log(user)
         req.token = token;
-        req.user = user;
+        req.user = user;  
         next();
         // console.log(decoded);
     } catch (error) {

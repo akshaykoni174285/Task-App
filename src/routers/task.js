@@ -1,5 +1,7 @@
 import express from 'express';
 import {Task, taskSchema} from '../models/task.js'
+import auth from '../middleware/auth.js'
+
 
 
 const router = express.Router();
@@ -9,15 +11,18 @@ const router = express.Router();
 
 
 // creating user 
-router.post('/tasks',(req, res) =>{
+router.post('/tasks',auth,(req, res) =>{
     console.log(req.body)
-
+    console.log(req.user)
     const {error, value} = taskSchema.validate(req.body)
     if(error){
         console.log("error", error)
         
     }
-    const task = new Task(value)
+    const task = new Task({
+        ...value,
+        owner: req.user._id
+    })
     task.save()
         .then(task=>{
             console.log("saving task doc")
@@ -117,6 +122,28 @@ router.delete('/tasks/:id', async(req, res) => {
 //             console.log("error while processing", err)
 //         })
 // })
+const myFunction = async()=>{
+    // using sign function 
+    // const token = jwt.sign({_id:"abc123"},"invincibleunderthesun",{expiresIn: '2 days'})
+    // // console.log(token)
+    // // first base64 
+    // // second is payload which we passed id 
+    // // signature for verification
+    // const res = await jwt.verify(token,"invincibleunderthesun")
+    // console.log(res);
+    const task = await Task.findById('67509412d25a73f13c34d423')
+    
+    await task.populate('owner').execPopulate()
+
+    console.log(task.owner)
+     
+
+
+}
+
+
+
+myFunction()
 
 
 export default router;

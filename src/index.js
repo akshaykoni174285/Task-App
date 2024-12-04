@@ -39,15 +39,26 @@ app.listen(port, () =>{
 
 import jwt from 'jsonwebtoken';
 
+
 const myFunction = async()=>{
     // using sign function 
-    const token = jwt.sign({_id:"abc123"},"invincibleunderthesun",{expiresIn: '2 days'})
-    // console.log(token)
-    // first base64 
-    // second is payload which we passed id 
-    // signature for verification
-    const res = await jwt.verify(token,"invincibleunderthesun")
+    // const token = jwt.sign({_id:"abc123"},"invincibleunderthesun",{expiresIn: '2 days'})
+    // // console.log(token)
+    // // first base64 
+    // // second is payload which we passed id 
+    // // signature for verification
+    // const res = await jwt.verify(token,"invincibleunderthesun")
     // console.log(res);
+    const task = await Task.findById('67509412d25a73f13c34d423')
+    
+    await task.populate('owner').execPopulate()
+
+    console.log(task.owner)
+     
+
+
 }
 
-myFunction();
+
+
+myFunction()
