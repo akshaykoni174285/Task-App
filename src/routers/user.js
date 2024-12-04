@@ -40,7 +40,7 @@ router.post('/user/login',async (req,res)=>{
         res.send({user,jwtToken}); 
         console.log("login sucessfully")
     } catch (error) {
-        res.status(400).send({error:"u nable to login"})
+        res.status(400).send({error:"unable to login"})
         console.log(error);
     }
 })

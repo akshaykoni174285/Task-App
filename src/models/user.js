@@ -42,9 +42,9 @@ user_schema.methods.getAuthToken = async function(){
 user_schema.methods.toJSON = function(){
     const user = this;
     const userObjec = user.toObject();
-    delete userObject.tokens;
-    delete userObject.password;
-    return userObject
+    delete userObjec.tokens;
+    delete userObjec.password;
+    return userObjec
 }
 
 
