@@ -1,9 +1,9 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose';
-import userRouter from '../src/routers/user.js'
+import userRouter from './routers/user.js'
 // import mongoose from 'mongoose'
-import taskRouter from '../src/routers/task.js';
+import taskRouter from './routers/task.js';
 import './db/mongoose.js';
 import auth from './middleware/auth.js'
 import bcrypt from 'bcrypt'
@@ -36,29 +36,14 @@ app.listen(port, () =>{
     console.log("listinging to port :" ,port)
 })
 
-
-import jwt from 'jsonwebtoken';
-
-
-const myFunction = async()=>{
-    // using sign function 
-    // const token = jwt.sign({_id:"abc123"},"invincibleunderthesun",{expiresIn: '2 days'})
-    // // console.log(token)
-    // // first base64 
-    // // second is payload which we passed id 
-    // // signature for verification
-    // const res = await jwt.verify(token,"invincibleunderthesun")
-    // console.log(res);
-    const task = await Task.findById('67509412d25a73f13c34d423')
-    
-    await task.populate('owner').execPopulate()
-
+import {Task} from './models/task.js'
+const main = async()=>{ 
+    const task = await Task.findById('67509412d25a73f13c34d423');
+    console.log(task)
+    await task.populate('owner')
     console.log(task.owner)
-     
-
-
 }
 
+main()
 
-
-myFunction()
+ 

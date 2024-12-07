@@ -4,8 +4,8 @@
   "description": "a simple application for task management using mongodb and node js",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node ./Backend/index.js",
+    "dev": "nodemon Backend/index.js"
   },
   "author": "akshay koni",
   "license": "ISC",
@@ -18,7 +18,7 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.9.0",
-    "mongoose": "^8.7.0",
+    "mongoose": "^8.8.4",
     "nodemon": "^3.1.7",
     "validator": "^13.12.0"
   }

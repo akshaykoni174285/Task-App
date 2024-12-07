@@ -29,6 +29,10 @@ const user_schema = new mongoose.Schema({
             type: String,
             required: true
         }
+    }],
+    tasks:[{
+        task:{type: String
+        }
     }]
 });
 user_schema.methods.getAuthToken = async function(){

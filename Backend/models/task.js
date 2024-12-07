@@ -14,9 +14,9 @@ const task_schema = new mongoose.Schema({
     owner : {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'users'
     }
-});
+}); 
 
 
 export const Task = mongoose.model('tasks', task_schema);

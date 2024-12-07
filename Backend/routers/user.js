@@ -3,6 +3,8 @@ import Joi from 'joi'
 import {User, userSchema} from '../models/user.js'
 const router = new express.Router();
 import auth from '../middleware/auth.js'
+import getUsers from '../controllers/user.js'
+
 
 
 // add a new user 
@@ -71,15 +73,7 @@ router.post('/user/logoutALL', auth, async(req,res)=>{
 })
 
 // get all users 
-router.get('/users/me', async (req, res) => {
-    try {
-        const users = await User.find({});
-        const result = users.map(user => user.toJSON()); // Apply toJSON on each user
-        res.status(200).send({ result });
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
+router.get('/users/me', getUsers);
 
 
 router.get('/users', async (req, res) => {
