@@ -30,11 +30,15 @@ const user_schema = new mongoose.Schema({
             required: true
         }
     }],
-    tasks:[{
-        task:{type: String
-        }
-    }]
+   
 });
+
+user_schema.virtual('tasks',{
+    ref: 'tasks',
+    localField: '_id',
+    foreignField : 'owner',
+    justOne: false,
+})
 user_schema.methods.getAuthToken = async function(){
 
     const user = this;

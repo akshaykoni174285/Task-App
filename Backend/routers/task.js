@@ -34,13 +34,6 @@ router.post('/tasks',auth,(req, res) =>{
         })
 })
 
-
-
-// get all users
-
-
-
-
 router.patch('/tasks/:id', async (req, res) => {
 
     try {
@@ -71,13 +64,13 @@ router.get('/tasks',(req,res)=>{
         })
 })
 
-router.get('/tasks/:id',(req,res)=>{
-    const id  = req.params.id
-    console.log(id)
-    Task.findOne({'_id':id})
+router.get('/tasks/:id',auth,(req,res)=>{
+    const _id  = req.params.id
+    console.log(_id)
+    const task = Task.findOne({_id,owner:req.user._id})
         .then(task=>{
             if(!task){
-                return res.status(404).send()
+                return res.status(404).send("no task found")
             }
 
             res.send(task).status(200)
