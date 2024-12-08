@@ -9,6 +9,8 @@ import auth from './middleware/auth.js'
 import bcrypt from 'bcrypt'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from 'http';
+import socketIo from 'socket.io';
 
 
 const app = express()
@@ -16,6 +18,8 @@ const port  = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename)
 const publicDir = path.join(__dirname, '..', 'frontend', 'public');
+const server  = http.createServer(app);
+const io = socketIo(server)
 
 app.use(express.static(path.join(publicDir)));
 app.use(express.json())
@@ -37,6 +41,16 @@ app.use(userRouter);
 app.use(taskRouter);
 
 
+io.on('connection',(socket)=>{
+    console.log("a user connected")
+
+    socket.on('disconnect',()=>{
+        console.log('a user disconnected')
+    })
+
+})
+
+
 app.listen(port, () =>{
     console.log("listinging to port :" ,port)
 })
@@ -44,19 +58,5 @@ app.listen(port, () =>{
 import {Task} from './models/task.js'
 import {User} from './models/user.js'
 
-const main = async()=>{ 
-    // const task = await Task.findById('67509412d25a73f13c34d423');
-    // console.log(task)
-    // await task.populate('owner')
-    // console.log(task.owner)
-    const user = await User.findById('675091ef229655043505353d');
-    console.log(user)
-    await user.populate('tasks') 
-    console.log(user.tasks)
-
-
-}
-
-main()
 
  

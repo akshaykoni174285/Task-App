@@ -34,13 +34,13 @@ router.post('/tasks',auth,(req, res) =>{
         })
 })
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id',auth, async (req, res) => {
 
     try {
         const {error, value} = taskSchema.validate(req.body)
         console.log(value)
        
-        const task = await Task.findByIdAndUpdate(req.params.id, value, {new:true})
+        const task = await Task.findByIdAndUpdate({_id:req.params.id, owner:req.user._id}, value,{ new: true, runValidators: true })
         res.send(task)
     } catch (error) {
         res.send("error").status(400)
@@ -51,17 +51,25 @@ router.patch('/tasks/:id', async (req, res) => {
 })
 
 // get all tasks 
-router.get('/tasks',(req,res)=>{
-    Task.find({})
-        .then(tasks=>{
-            if(!tasks){
-                return res.status(404).send()
-            }
-            res.send(tasks)
-        })
-        .catch(error=>{
-            console.log("unable to get the all the tasks")
-        })
+router.get('/tasks',auth,async (req,res)=>{
+    // Task.find({owner:req.user._id}) 
+    //     .then(tasks=>{
+    //         if(!tasks){
+    //             return res.status(404).send('not task found for this user')
+    //         }
+    //         res.send(tasks)
+    //     })
+    //     .catch(error=>{
+    //         console.log("unable to get the all the tasks")
+    //     })
+    try {
+        await req.user.populate('tasks')
+      
+        res.send(req.user.tasks).status(200)
+        
+    } catch (error) {
+        res.status(500).send('somethig went wrong')
+    }
 })
 
 router.get('/tasks/:id',auth,(req,res)=>{
@@ -83,10 +91,11 @@ router.get('/tasks/:id',auth,(req,res)=>{
 })
 
 
-router.delete('/tasks/:id', async(req, res) => {
+router.delete('/tasks/:id',auth, async(req, res) => {
     try {
         console.log(req.params.id)
-        const task = await Task.findByIdAndDelete(req.params.id)
+        // const task = await Task.findByIdAndDelete({_id:req.params.id, owner:req.user._id})
+        const task = await Task.findOneAndDelete({_id:req.params.id, owner:req.user._id})
         if(!task){
             return res.send('task not found').status(404)
         }
